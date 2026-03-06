@@ -659,16 +659,25 @@ def prescriptive_analytics(df):
     # Segment Analysis
     col1, col2 = st.columns(2)
     
-    with col1:
-        segment_counts = df_results['Risk_Segment'].value_counts()
-        fig_segments = px.pie(
-            values=segment_counts.values,
-            names=segment_counts.index,
-            title='Customer Segments by Loan Propensity',
-            color_discrete_sequence=px.colors.sequential.RdYlGn[::-1]
-        )
-        st.plotly_chart(fig_segments, use_container_width=True)
+with col1:
+    segment_counts = df_results['Risk_Segment'].value_counts()
     
+    # Define colors for segments (Low=Red, Medium=Orange, High=Light Green, Very High=Green)
+    segment_colors = {
+        'Low': '#EF4444',
+        'Medium': '#F59E0B', 
+        'High': '#10B981',
+        'Very High': '#059669'
+    }
+    
+    fig_segments = px.pie(
+        values=segment_counts.values,
+        names=segment_counts.index,
+        title='Customer Segments by Loan Propensity',
+        color=segment_counts.index,
+        color_discrete_map=segment_colors
+    )
+    st.plotly_chart(fig_segments, use_container_width=True)    
     with col2:
         fig_prob_dist = px.histogram(
             df_results, x='Loan_Probability', nbins=50,
